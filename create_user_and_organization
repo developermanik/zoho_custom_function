@@ -1,0 +1,61 @@
+
+/*
+This is a sample function. Uncomment to execute or make changes to this function.
+vendorID = vendor.get("contact_id");
+companyName = vendor.get("company_name");
+organizationID = organization.get("organization_id");
+*/
+try 
+{
+	apiUrl = "http://65.2.69.67:3000/api/varthak/user-org/create";
+	vendorMobile = vendor.get("mobile");
+	companyName = vendor.get("company_name");
+	contactName = vendor.get("contact_name");
+	businessNature = vendor.get("cf_customer_type");
+	area = vendor.get("cf_area");
+	vendorID = vendor.get("contact_id");
+	map = Map();
+	headers = Map();
+	headers.put("content-type","application/x-www-form-urlencoded");
+	body = Map();
+	body.put("ref_org_id","1");
+	body.put("ref_user_id","1");
+	body.put("role_id","1");
+	body.put("mobile",vendorMobile);
+	body.put("company_name",companyName);
+	body.put("contact_name",contactName);
+	body.put("business_nature",businessNature);
+	body.put("city",area);
+	body.put("zoho_contact_id",vendorID);
+	body.put("source_from","3");
+	body.put("default_organisation","1");
+	body.put("status","1");
+	// 	body.put("present_address",vendorMobile);
+	// 	body.put("city",vendorMobile);
+	// 	body.put("state",vendorMobile);
+	// 	body.put("postal_code",vendorMobile);
+	// 	body.put("country",vendorMobile);
+	response = postUrl(apiUrl,body,headers);
+	resInfo = Map();
+	if(response)
+	{
+		org_id = response.get("record").get("org_id");
+		user_id = response.get("record").get("user_id");
+		messageInfo = response.get("message");
+		resInfo.put("message",messageInfo);
+		resInfo.put("user_id",org_id);
+		resInfo.put("org_id",org_id);
+		if(response.get("isOrgExists") == true)
+		{
+			info resInfo;
+		}
+		else
+		{
+			info resInfo;
+		}
+	}
+}
+catch (e)
+{
+	info e.message;
+}

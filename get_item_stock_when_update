@@ -1,0 +1,36 @@
+
+/*
+This is a sample function. Uncomment to execute or make changes to this function.  
+itemID = item.get("item_id");
+organizationID = organization.get("organization_id");
+*/
+try 
+{
+	itemInfo = item;
+	itemID = item.get("item_id");
+	stock_line_items = List();
+	stock_line_items.add({"item_id":itemID});
+	organizationID = organization.get("organization_id");
+	//stock update
+	varURL = "http://65.2.69.67:3000/api/varthak/zoho-item/stock-management";
+	stockHeaders = Map();
+	stockHeaders.put("content-type","application/json");
+	stockMgmtBody = Map();
+	stockMgmtBody.put("org_id",organizationID);
+	stockMgmtBody.put("line_items",stock_line_items);
+	stockMgmtBody = stockMgmtBody.toJSONList();
+	info stockMgmtBody;
+	stock_res = postUrl(varURL,stockMgmtBody,stockHeaders);
+	if(stock_res)
+	{
+		info stock_res;
+	}
+	else
+	{
+		info "Stock not updated!";
+	}
+}
+catch (e)
+{
+	info e;
+}

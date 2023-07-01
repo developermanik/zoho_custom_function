@@ -1,0 +1,51 @@
+
+/*
+This is a sample function. Uncomment to execute or make changes to this function.
+salesorderID = salesorder.get("salesorder_id");
+salesorderdate = salesorder.get("date").toDate();
+organizationID = organization.get("organization_id");
+*/
+try 
+{
+	salesInfo = salesorder;
+	//info salesInfo;
+	salesorderID = salesorder.get("salesorder_id");
+	lineItems = salesInfo.get('line_items');
+	line_items = List();
+	stock_line_items = List();
+	stock_mgmt = List();
+	organizationID = organization.get("organization_id");
+	for each  lineItem in lineItems
+	{
+		item_id = lineItem.get('item_id');
+		stock_line_items.add({"item_id":item_id});
+		stock_res = zoho.inventory.getRecordsByID("Items",organizationID,item_id,"inventoryconnection");
+		item_info = stock_res.get("item");
+		item_id = item_info.get("item_id");
+		item_name = item_info.get("name");
+		item_rate = item_info.get("rate");
+		item_sales_rate = item_info.get("sales_rate");
+		item_type = item_info.get("product_type");
+		item_avl_stock = item_info.get("actual_available_stock");
+		stock_mgmt.add({"item_id":item_id,"item_name":item_name,"item_avl_stock":item_avl_stock,"item_rate":item_rate,"item_sales_rate":item_sales_rate,"item_type":item_type});
+	}
+	stockRecords = Map();
+	stockRecords.put("success",true);
+	stockRecords.put("code",201);
+	stockRecords.put("module","salesorder");
+	stockRecords.put("salesorder_id",salesorderID);
+	stockRecords.put("salesorder_number",salesInfo.get("salesorder_number"));
+	stockRecords.put("line_items",stock_mgmt);
+	stockRecords = stockRecords.toJSONList();
+	info stockRecords;
+	varURL = "https://vamanas.in/esandhai2/admin/admin/varthakhub/updatestock";
+	stockHeaders = Map();
+	stockHeaders.put("content-type","application/json");
+	stockMgmtBody = Map();
+	stock_response = postUrl(varURL,stockRecords,stockHeaders);
+	info stock_response;
+}
+catch (e)
+{
+	info e;
+}

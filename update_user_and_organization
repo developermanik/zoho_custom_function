@@ -1,0 +1,33 @@
+
+/*
+This is a sample function. Uncomment to execute or make changes to this function.
+vendorID = vendor.get("contact_id");
+companyName = vendor.get("company_name");
+organizationID = organization.get("organization_id");
+*/
+try 
+{
+	apiUrl = "http://65.2.69.67:3000/api/varthak/user-org/update";
+	vendorMobile = vendor.get("mobile");
+	contactName = vendor.get("contact_name");
+	businessNature = vendor.get("cf_customer_type");
+	area = vendor.get("cf_area");
+	map = Map();
+	headers = Map();
+	headers.put("content-type","application/x-www-form-urlencoded");
+	body = Map();
+	body.put("mobile",vendorMobile);
+	body.put("contact_name",contactName);
+	body.put("business_nature",businessNature);
+	body.put("city",area);
+	response = postUrl(apiUrl,body,headers);
+	resInfo = Map();
+	if(response)
+	{
+		info response;
+	}
+}
+catch (e)
+{
+	info e.message;
+}

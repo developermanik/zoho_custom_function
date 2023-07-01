@@ -1,0 +1,105 @@
+
+// 
+/*
+This is a sample function. Uncomment to execute or make changes to this function.
+purchaseorderID = purchaseorder.get("purchaseorder_id");
+purchaseorderdate = purchaseorder.get("date").toDate();
+organizationID = organization.get("organization_id");
+*/
+try 
+{
+	purchaseInfo = purchaseorder;
+	// info purchaseInfo;
+	purchaseorderID = purchaseorder.get("purchaseorder_id");
+	lineItems = purchaseInfo.get('line_items');
+	contact_id = purchaseInfo;
+	line_items = List();
+	stock_line_items = List();
+	stock_mgmt = List();
+	organizationID = organization.get("organization_id");
+	for each  lineItem in lineItems
+	{
+		item_id = lineItem.get('item_id');
+		quantity = lineItem.get('quantity').toString();
+		price = lineItem.get('rate').toString();
+		line_items.add({"product_id":item_id,"quantity":quantity,"product_price":price});
+		stock_line_items.add({"item_id":item_id});
+		stock_res = zoho.inventory.getRecordsByID("Items",organizationID,item_id,"inventoryconnection");
+		item_info = stock_res.get("item");
+		item_id = item_info.get("item_id");
+		item_name = item_info.get("name");
+		item_rate = item_info.get("rate");
+		item_sales_rate = item_info.get("sales_rate");
+		item_type = item_info.get("product_type");
+		item_avl_stock = item_info.get("actual_available_stock");
+		stock_mgmt.add({"item_id":item_id,"item_name":item_name,"item_avl_stock":item_avl_stock,"item_rate":item_rate,"item_sales_rate":item_sales_rate,"item_type":item_type});
+	}
+	stockRecords = Map();
+	stockRecords.put("success",true);
+	stockRecords.put("code",201);
+	stockRecords.put("module","purchaseorder");
+	stockRecords.put("purchaseorder_id",purchaseorderID);
+	stockRecords.put("purchaseorder_number",purchaseInfo.get("purchaseorder_number"));
+	stockRecords.put("line_items",stock_mgmt);
+	stockRecords = stockRecords.toJSONList();
+	varURL = "https://vamanas.in/esandhai2/admin/admin/varthakhub/updatestock";
+	stockHeaders = Map();
+	stockHeaders.put("content-type","application/json");
+	stockMgmtBody = Map();
+	stock_response = postUrl(varURL,stockRecords,stockHeaders);
+	info stock_response;
+	//info line_items;
+	vendorID = purchaseInfo.get('vendor_id');
+	purchaseorderID = purchaseInfo.get("purchaseorder_id");
+	purchaseInvoice = purchaseInfo.get('purchaseorder_number');
+	invoiceDate = purchaseInfo.get('date');
+	deliveryDate = purchaseInfo.get('date');
+	POstatus = purchaseInfo.get('status');
+	shippingAddress = purchaseInfo.get('delivery_address');
+	if(POstatus == "issued")
+	{
+		status = "1";
+		orderStatus = "2";
+	}
+	else
+	{
+		status = "0";
+		orderStatus = "0";
+	}
+	vendorName = purchaseInfo.get('vendor_name');
+	body = Map();
+	body.put("user_id","1");
+	body.put("org_id","1");
+	body.put("zoho_contact_id",vendorID);
+	body.put("purchase_invoice",purchaseInvoice);
+	body.put("invoice_date",invoiceDate);
+	body.put("delivery_date","2023-06-06");
+	body.put("shipping_address","");
+	body.put("name",vendorName);
+	body.put("order_status",orderStatus);
+	body.put("status",status);
+	body.put("request_from","po_zoho");
+	body.put("line_items",line_items);
+	body.put("zoho_purchase_id",purchaseorderID);
+	body = body.toJSONList();
+	/*PO creation*/
+	apiUrl = "http://65.2.69.67:3000/api/varthak/transaction/zoho/purchase-sales-order/create";
+	headers = Map();
+	headers.put("content-type","application/json");
+	response = postUrl(apiUrl,body,headers);
+	if(response)
+	{
+		messageInfo = response.get("message");
+		resInfo = Map();
+		resInfo.put("message",messageInfo);
+		info resInfo;
+	}
+	else
+	{
+		info "PO and SO not created";
+	}
+}
+catch (e)
+{
+	info e.message;
+}
